@@ -119,44 +119,32 @@ namespace MultiplayerARPG
                     lastNpcObjectId = 0;
                     if (targetPlayer != null && !targetPlayer.IsDead())
                     {
-                        targetPosition = targetPlayer.CacheTransform.position;
-                        targetEntity = targetPlayer;
-                        PlayerCharacterEntity.SetTargetEntity(targetPlayer);
+                        SetTarget(targetPlayer);
                         break;
                     }
                     else if (targetMonster != null && !targetMonster.IsDead())
                     {
-                        targetPosition = targetMonster.CacheTransform.position;
-                        targetEntity = targetMonster;
-                        PlayerCharacterEntity.SetTargetEntity(targetMonster);
+                        SetTarget(targetMonster);
                         break;
                     }
                     else if (targetNpc != null)
                     {
-                        targetPosition = targetNpc.CacheTransform.position;
-                        targetEntity = targetNpc;
-                        PlayerCharacterEntity.SetTargetEntity(targetNpc);
+                        SetTarget(targetNpc);
                         break;
                     }
                     else if (targetItemDrop != null)
                     {
-                        targetPosition = targetItemDrop.CacheTransform.position;
-                        targetEntity = targetItemDrop;
-                        PlayerCharacterEntity.SetTargetEntity(targetItemDrop);
+                        SetTarget(targetItemDrop);
                         break;
                     }
                     else if (targetHarvestable != null && !targetHarvestable.IsDead())
                     {
-                        targetPosition = targetHarvestable.CacheTransform.position;
-                        targetEntity = targetHarvestable;
-                        PlayerCharacterEntity.SetTargetEntity(targetHarvestable);
+                        SetTarget(targetHarvestable);
                         break;
                     }
                     else if (buildingMaterial != null && buildingMaterial.buildingEntity != null && !buildingMaterial.buildingEntity.IsDead())
                     {
-                        targetPosition = buildingMaterial.buildingEntity.CacheTransform.position;
-                        targetEntity = buildingMaterial.buildingEntity;
-                        PlayerCharacterEntity.SetTargetEntity(buildingMaterial.buildingEntity);
+                        SetTarget(buildingMaterial.buildingEntity);
                         break;
                     }
                 }
@@ -193,6 +181,13 @@ namespace MultiplayerARPG
                     PlayerCharacterEntity.PointClickMovement(targetPosition);
                 }
             }
+        }
+
+        protected void SetTarget(BaseGameEntity entity)
+        {
+            targetPosition = entity.CacheTransform.position;
+            targetEntity = entity;
+            PlayerCharacterEntity.SetTargetEntity(entity);
         }
 
         protected void UpdateWASDInput()
