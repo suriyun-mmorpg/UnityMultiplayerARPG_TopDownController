@@ -131,15 +131,13 @@ namespace MultiplayerARPG
                 queueUsingSkill = null;
                 destination = null;
                 if (CacheUISceneGameplay != null)
-                    CacheUISceneGameplay.SetTargetCharacter(null);
+                    CacheUISceneGameplay.SetTargetEntity(null);
                 CancelBuild();
             }
             else
             {
-                targetCharacter = null;
-                PlayerCharacterEntity.TryGetTargetEntity(out targetCharacter);
                 if (CacheUISceneGameplay != null)
-                    CacheUISceneGameplay.SetTargetCharacter(targetCharacter);
+                    CacheUISceneGameplay.SetTargetEntity(PlayerCharacterEntity.GetTargetEntity());
             }
 
             if (destination.HasValue)
