@@ -75,7 +75,7 @@ namespace MultiplayerARPG
                 if (Vector3.Distance(tempVector3, CharacterTransform.position) > gameInstance.buildDistance)
                     return false;
 
-                var buildingArea = tempTransform.GetComponent<BuildingArea>();
+                BuildingArea buildingArea = tempTransform.GetComponent<BuildingArea>();
                 if (buildingArea == null || (buildingArea.buildingEntity != null && buildingArea.buildingEntity == currentBuildingEntity))
                     continue;
 
