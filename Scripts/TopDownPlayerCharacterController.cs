@@ -27,7 +27,6 @@ namespace MultiplayerARPG
 
         public const float DETECT_MOUSE_DRAG_DISTANCE = 10f;
         public const float DETECT_MOUSE_HOLD_DURATION = 1f;
-        public DimensionType dimensionType;
         public PlayerCharacterControllerMode controllerMode;
         [Tooltip("Set this to TRUE to find nearby enemy and look to it while attacking when `Controller Mode` is `WASD`")]
         public bool wasdLockAttackTarget;
@@ -221,7 +220,7 @@ namespace MultiplayerARPG
         public Vector3 GetMoveDirection(float horizontalInput, float verticalInput)
         {
             Vector3 moveDirection = Vector3.zero;
-            switch (dimensionType)
+            switch (gameInstance.DimensionType)
             {
                 case DimensionType.Dimension3D:
                     moveDirection += Camera.main.transform.forward * verticalInput;

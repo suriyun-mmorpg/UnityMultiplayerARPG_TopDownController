@@ -21,7 +21,7 @@ namespace MultiplayerARPG
         public int FindClickObjects(out Vector3 worldPointFor2D)
         {
             worldPointFor2D = Vector3.zero;
-            if (dimensionType == DimensionType.Dimension3D)
+            if (gameInstance.DimensionType == DimensionType.Dimension3D)
                 return Physics.RaycastNonAlloc(Camera.main.ScreenPointToRay(Input.mousePosition), raycasts, 100f, gameInstance.GetTargetLayerMask());
             worldPointFor2D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             return Physics2D.LinecastNonAlloc(worldPointFor2D, worldPointFor2D, raycasts2D, gameInstance.GetTargetLayerMask());
@@ -30,7 +30,7 @@ namespace MultiplayerARPG
         public void FindAndSetBuildingAreaFromMousePosition()
         {
             tempCount = 0;
-            switch (dimensionType)
+            switch (gameInstance.DimensionType)
             {
                 case DimensionType.Dimension3D:
                     tempCount = Physics.RaycastNonAlloc(Camera.main.ScreenPointToRay(Input.mousePosition), raycasts, 100f, gameInstance.GetBuildLayerMask());
@@ -48,7 +48,7 @@ namespace MultiplayerARPG
             if (currentBuildingEntity == null)
                 return;
             tempCount = 0;
-            switch (dimensionType)
+            switch (gameInstance.DimensionType)
             {
                 case DimensionType.Dimension3D:
                     tempVector3 = CharacterTransform.position + (CharacterTransform.forward * currentBuildingEntity.characterForwardDistance);
@@ -95,28 +95,28 @@ namespace MultiplayerARPG
 
         public Transform GetRaycastTransform(int index)
         {
-            if (dimensionType == DimensionType.Dimension3D)
+            if (gameInstance.DimensionType == DimensionType.Dimension3D)
                 return raycasts[index].transform;
             return raycasts2D[index].transform;
         }
 
         public Vector3 GetRaycastPoint(int index)
         {
-            if (dimensionType == DimensionType.Dimension3D)
+            if (gameInstance.DimensionType == DimensionType.Dimension3D)
                 return raycasts[index].point;
             return raycasts2D[index].point;
         }
 
         public int OverlapObjects(Vector3 position, float distance, int layerMask)
         {
-            if (dimensionType == DimensionType.Dimension3D)
+            if (gameInstance.DimensionType == DimensionType.Dimension3D)
                 return Physics.OverlapSphereNonAlloc(position, distance, overlapColliders, layerMask);
             return Physics2D.OverlapCircleNonAlloc(position, distance, overlapColliders2D, layerMask);
         }
 
         public GameObject GetOverlapObject(int index)
         {
-            if (dimensionType == DimensionType.Dimension3D)
+            if (gameInstance.DimensionType == DimensionType.Dimension3D)
                 return overlapColliders[index].gameObject;
             return overlapColliders2D[index].gameObject;
         }
