@@ -536,9 +536,9 @@ namespace MultiplayerARPG
                 if (itemIndex >= 0)
                 {
                     if (item.IsEquipment())
-                        RequestEquipItem((ushort)itemIndex);
+                        RequestEquipItem((short)itemIndex);
                     else if (item.IsPotion() || item.IsPet())
-                        RequestUseItem((ushort)itemIndex);
+                        RequestUseItem((short)itemIndex);
                     else if (item.IsBuilding())
                     {
                         destination = null;

@@ -255,12 +255,12 @@ namespace MultiplayerARPG
             }
         }
 
-        public void RequestEquipItem(ushort itemIndex)
+        public void RequestEquipItem(short itemIndex)
         {
             PlayerCharacterEntity.RequestEquipItem(itemIndex);
         }
 
-        public void RequestUseItem(ushort itemIndex)
+        public void RequestUseItem(short itemIndex)
         {
             PlayerCharacterEntity.RequestUseItem(itemIndex);
         }
