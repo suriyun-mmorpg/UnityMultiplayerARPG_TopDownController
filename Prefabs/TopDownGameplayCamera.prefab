@@ -187,7 +187,7 @@ MonoBehaviour:
   xRotation: 40
   yRotation: 0
   useTargetYRotation: 0
-  zoomDistance: 3
+  zoomDistance: 12
   zoomByAspectRatio: 0
   zoomByAspectRatioWidth: 0
   zoomByAspectRatioHeight: 0
