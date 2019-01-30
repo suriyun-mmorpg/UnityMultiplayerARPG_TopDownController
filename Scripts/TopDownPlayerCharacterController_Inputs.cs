@@ -524,7 +524,7 @@ namespace MultiplayerARPG
                         {
                             destination = null;
                             PlayerCharacterEntity.StopMove();
-                            RequestUseSkill(CharacterTransform.position, skill.DataId);
+                            RequestUseSkill(skill.DataId);
                         }
                     }
                 }

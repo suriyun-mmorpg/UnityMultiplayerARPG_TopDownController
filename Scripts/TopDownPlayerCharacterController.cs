@@ -239,9 +239,9 @@ namespace MultiplayerARPG
             PlayerCharacterEntity.RequestAttack();
         }
 
-        public void RequestUseSkill(int dataId, Vector3 aimPosition)
+        public void RequestUseSkill(int dataId)
         {
-            PlayerCharacterEntity.RequestUseSkill(dataId, aimPosition);
+            PlayerCharacterEntity.RequestUseSkill(dataId);
         }
 
         public void RequestUsePendingSkill()
@@ -250,7 +250,7 @@ namespace MultiplayerARPG
             {
                 UsingSkillData queueUsingSkillValue = queueUsingSkill.Value;
                 Vector3 aimPosition = queueUsingSkillValue.aimPosition.HasValue ? queueUsingSkillValue.aimPosition.Value : CharacterTransform.position;
-                RequestUseSkill(queueUsingSkillValue.dataId, aimPosition);
+                RequestUseSkill(queueUsingSkillValue.dataId);
                 queueUsingSkill = null;
             }
         }
