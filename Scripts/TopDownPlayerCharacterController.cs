@@ -5,264 +5,157 @@ using UnityEngine;
 
 namespace MultiplayerARPG
 {
-    public partial class TopDownPlayerCharacterController : BasePlayerCharacterController
+    public sealed partial class TopDownPlayerCharacterController : PlayerCharacterController
     {
-        public enum PlayerCharacterControllerMode
-        {
-            PointClick,
-            WASD,
-            Both,
-        }
-
-        public struct UsingSkillData
-        {
-            public Vector3? aimPosition;
-            public int dataId;
-            public UsingSkillData(Vector3? position, int dataId)
-            {
-                this.aimPosition = position;
-                this.dataId = dataId;
-            }
-        }
-
-        public const float DETECT_MOUSE_DRAG_DISTANCE = 10f;
-        public const float DETECT_MOUSE_HOLD_DURATION = 1f;
-        public PlayerCharacterControllerMode controllerMode;
-        [Tooltip("Set this to TRUE to find nearby enemy and look to it while attacking when `Controller Mode` is `WASD`")]
-        public bool wasdLockAttackTarget;
-        [Tooltip("This will be used to find nearby enemy when `Controller Mode` is `Point Click` or when `Wasd Lock Attack Target` is `TRUE`")]
-        public float lockAttackTargetDistance = 10f;
-        public FollowCameraControls gameplayCameraPrefab;
-        public GameObject targetObjectPrefab;
-        [Header("Building Settings")]
-        public bool buildGridSnap;
-        public float buildGridSize = 4f;
-        public bool buildRotationSnap;
-
-        protected Vector3? destination;
-        protected UsingSkillData? queueUsingSkill;
-        protected Vector3 mouseDownPosition;
-        protected float mouseDownTime;
-        protected bool isMouseDragOrHoldOrOverUI;
-        protected uint lastNpcObjectId;
-
-        public FollowCameraControls CacheGameplayCameraControls { get; protected set; }
-        public GameObject CacheTargetObject { get; protected set; }
-
-        protected BaseGameEntity targetEntity;
-        protected Vector3 targetPosition;
-        // Optimizing garbage collection
-        protected bool getMouseUp;
-        protected bool getMouseDown;
-        protected bool getMouse;
-        protected bool isPointerOverUI;
-        protected bool isMouseDragDetected;
-        protected bool isMouseHoldDetected;
-        protected bool isMouseHoldAndNotDrag;
-        protected BaseCharacterEntity targetCharacter;
-        protected BaseCharacterEntity targetEnemy;
-        protected BasePlayerCharacterEntity targetPlayer;
-        protected BaseMonsterCharacterEntity targetMonster;
-        protected NpcEntity targetNpc;
-        protected ItemDropEntity targetItemDrop;
-        protected BuildingEntity targetBuilding;
-        protected HarvestableEntity targetHarvestable;
-
-        protected override void Awake()
-        {
-            base.Awake();
-            buildingItemIndex = -1;
-            currentBuildingEntity = null;
-
-            if (gameplayCameraPrefab != null)
-            {
-                // Set parent transform to root for the best performance
-                CacheGameplayCameraControls = Instantiate(gameplayCameraPrefab);
-            }
-            if (targetObjectPrefab != null)
-            {
-                // Set parent transform to root for the best performance
-                CacheTargetObject = Instantiate(targetObjectPrefab);
-                CacheTargetObject.SetActive(false);
-            }
-        }
-
-        protected override void Setup(BasePlayerCharacterEntity characterEntity)
-        {
-            base.Setup(characterEntity);
-
-            if (characterEntity == null)
-                return;
-
-            if (CacheGameplayCameraControls != null)
-                CacheGameplayCameraControls.target = characterEntity.CacheTransform;
-        }
-
-        protected override void Desetup(BasePlayerCharacterEntity characterEntity)
-        {
-            base.Desetup(characterEntity);
-
-            if (CacheGameplayCameraControls != null)
-                CacheGameplayCameraControls.target = null;
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            if (CacheGameplayCameraControls != null)
-                Destroy(CacheGameplayCameraControls.gameObject);
-            if (CacheTargetObject != null)
-                Destroy(CacheTargetObject.gameObject);
-        }
-
         protected override void Update()
         {
-            if (PlayerCharacterEntity == null || !PlayerCharacterEntity.IsOwnerClient)
+            pointClickSetTargetImmediately = true;
+            selectedTarget = PlayerCharacterEntity.GetTargetEntity();
+            base.Update();
+        }
+
+        protected override void UpdatePointClickInput()
+        {
+            // If it's building something, not allow point click movement
+            if (currentBuildingEntity != null)
                 return;
 
-            base.Update();
+            if (controllerMode != PlayerCharacterControllerMode.PointClick &&
+                controllerMode != PlayerCharacterControllerMode.Both)
+                return;
 
-            if (CacheTargetObject != null)
-                CacheTargetObject.gameObject.SetActive(destination.HasValue);
+            getMouseDown = Input.GetMouseButtonDown(0);
+            getMouseUp = Input.GetMouseButtonUp(0);
+            getMouse = Input.GetMouseButton(0);
 
-            if (PlayerCharacterEntity.IsDead())
-            {
-                queueUsingSkill = null;
-                destination = null;
-                if (CacheUISceneGameplay != null)
-                    CacheUISceneGameplay.SetTargetEntity(null);
-                CancelBuild();
-            }
-            else
-            {
-                if (CacheUISceneGameplay != null)
-                    CacheUISceneGameplay.SetTargetEntity(PlayerCharacterEntity.GetTargetEntity());
-            }
+            isPointerOverUI = CacheUISceneGameplay != null && CacheUISceneGameplay.IsPointerOverUIObject();
+            if (isPointerOverUI)
+                return;
 
-            if (destination.HasValue)
+            if (getMouseUp)
             {
-                if (CacheTargetObject != null)
-                    CacheTargetObject.transform.position = destination.Value;
-                if (Vector3.Distance(destination.Value, CharacterTransform.position) < StoppingDistance + 0.5f)
-                    destination = null;
+                // Clear target when player release mouse button
+                targetEntity = null;
+                return;
             }
 
-            UpdateInput();
-            UpdateFollowTarget();
-        }
-
-        private Vector3 GetBuildingPlacePosition(Vector3 position)
-        {
-            if (buildGridSnap)
-                position = new Vector3(Mathf.Round(position.x / buildGridSize) * buildGridSize, position.y, Mathf.Round(position.z / buildGridSize) * buildGridSize);
-            return position;
-        }
-
-        private Vector3 GetBuildingPlaceEulerAngles(Vector3 eulerAngles)
-        {
-            eulerAngles.x = 0;
-            eulerAngles.z = 0;
-            // Make Y rotation set to 0, 90, 180
-            if (buildRotationSnap)
-                eulerAngles.y = Mathf.Round(eulerAngles.y / 90) * 90;
-            return eulerAngles;
-        }
-
-        public bool TryGetAttackingCharacter(out BaseCharacterEntity character)
-        {
-            character = null;
-            if (PlayerCharacterEntity.TryGetTargetEntity(out character))
+            if (getMouseDown)
             {
-                if (character.CanReceiveDamageFrom(PlayerCharacterEntity))
-                    return true;
-                else
-                    character = null;
-            }
-            return false;
-        }
-
-        public bool GetAttackDistanceAndFov(out float attackDistance, out float attackFov)
-        {
-            attackDistance = PlayerCharacterEntity.GetAttackDistance();
-            attackFov = PlayerCharacterEntity.GetAttackFov();
-            if (queueUsingSkill.HasValue)
-            {
-                UsingSkillData queueUsingSkillValue = queueUsingSkill.Value;
-                Skill skill = null;
-                if (GameInstance.Skills.TryGetValue(queueUsingSkillValue.dataId, out skill) && skill != null)
+                targetEntity = null;
+                tempCount = FindClickObjects(out tempVector3);
+                for (tempCounter = 0; tempCounter < tempCount; ++tempCounter)
                 {
-                    if (skill.IsAttack())
+                    tempTransform = GetRaycastTransform(tempCounter);
+                    targetPlayer = tempTransform.GetComponent<BasePlayerCharacterEntity>();
+                    targetMonster = tempTransform.GetComponent<BaseMonsterCharacterEntity>();
+                    targetNpc = tempTransform.GetComponent<NpcEntity>();
+                    targetItemDrop = tempTransform.GetComponent<ItemDropEntity>();
+                    targetHarvestable = tempTransform.GetComponent<HarvestableEntity>();
+                    BuildingMaterial buildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
+                    targetPosition = GetRaycastPoint(tempCounter);
+                    PlayerCharacterEntity.SetTargetEntity(null);
+                    lastNpcObjectId = 0;
+                    if (targetPlayer != null && !targetPlayer.IsDead())
                     {
-                        attackDistance = PlayerCharacterEntity.GetSkillAttackDistance(skill);
-                        attackFov = PlayerCharacterEntity.GetSkillAttackFov(skill);
+                        SetTarget(targetPlayer);
+                        break;
                     }
-                    else
+                    else if (targetMonster != null && !targetMonster.IsDead())
                     {
-                        // Stop movement to use non attack skill
-                        PlayerCharacterEntity.StopMove();
-                        RequestUsePendingSkill();
-                        return false;
+                        SetTarget(targetMonster);
+                        break;
+                    }
+                    else if (targetNpc != null)
+                    {
+                        SetTarget(targetNpc);
+                        break;
+                    }
+                    else if (targetItemDrop != null)
+                    {
+                        SetTarget(targetItemDrop);
+                        break;
+                    }
+                    else if (targetHarvestable != null && !targetHarvestable.IsDead())
+                    {
+                        SetTarget(targetHarvestable);
+                        break;
+                    }
+                    else if (buildingMaterial != null && buildingMaterial.buildingEntity != null && !buildingMaterial.buildingEntity.IsDead())
+                    {
+                        SetTarget(buildingMaterial.buildingEntity);
+                        break;
                     }
                 }
+            }
+
+            if (getMouse)
+            {
+                // Close NPC dialog, when target changes
+                if (CacheUISceneGameplay != null && CacheUISceneGameplay.uiNpcDialog != null)
+                    CacheUISceneGameplay.uiNpcDialog.Hide();
+
+                // Move to target
+                if (targetEntity != null)
+                {
+                    // Hide destination when target is object (not map ground)
+                    destination = null;
+                    PlayerCharacterEntity.SetTargetEntity(targetEntity);
+                }
                 else
-                    queueUsingSkill = null;
+                {
+                    // When moving, find target position which mouse click on
+                    tempCount = FindClickObjects(out tempVector3);
+                    if (tempCount > 0)
+                    {
+                        targetPosition = GetRaycastPoint(0);
+                        // When clicked on map (any non-collider position)
+                        // tempVector3 is come from FindClickObjects()
+                        // - Clear character target to make character stop doing actions
+                        // - Clear selected target to hide selected entity UIs
+                        // - Set target position to position where mouse clicked
+                        if (gameInstance.DimensionType == DimensionType.Dimension2D)
+                        {
+                            PlayerCharacterEntity.SetTargetEntity(null);
+                            tempVector3.z = 0;
+                            targetPosition = tempVector3;
+                        }
+                    }
+                    destination = targetPosition;
+                    PlayerCharacterEntity.PointClickMovement(targetPosition.Value);
+                }
             }
-            return true;
         }
 
-        public bool IsLockTarget()
+        protected override void SetTarget(BaseGameEntity entity)
         {
-            return controllerMode == PlayerCharacterControllerMode.Both ||
-                controllerMode == PlayerCharacterControllerMode.PointClick ||
-                (controllerMode == PlayerCharacterControllerMode.WASD && wasdLockAttackTarget);
+            targetPosition = entity.CacheTransform.position;
+            targetEntity = entity;
+            PlayerCharacterEntity.SetTargetEntity(entity);
+            selectedTarget = entity;
         }
 
-        public Vector3 GetMoveDirection(float horizontalInput, float verticalInput)
+        public override void RequestAttack()
         {
-            Vector3 moveDirection = Vector3.zero;
-            switch (gameInstance.DimensionType)
+            base.RequestAttack();
+            ClearTargetEntityAfterAttack();
+        }
+
+        public override void RequestUseSkill(int dataId)
+        {
+            base.RequestUseSkill(dataId);
+            ClearTargetEntityAfterAttack();
+        }
+
+        private void ClearTargetEntityAfterAttack()
+        {
+            if (targetEntity == null)
             {
-                case DimensionType.Dimension3D:
-                    moveDirection += Camera.main.transform.forward * verticalInput;
-                    moveDirection += Camera.main.transform.right * horizontalInput;
-                    moveDirection.y = 0;
-                    break;
-                case DimensionType.Dimension2D:
-                    moveDirection = new Vector2(horizontalInput, verticalInput);
-                    break;
-            }
-            return moveDirection;
-        }
-
-        public void RequestAttack()
-        {
-            PlayerCharacterEntity.RequestAttack();
-        }
-
-        public void RequestUseSkill(int dataId)
-        {
-            PlayerCharacterEntity.RequestUseSkill(dataId);
-        }
-
-        public void RequestUsePendingSkill()
-        {
-            if (queueUsingSkill.HasValue)
-            {
-                UsingSkillData queueUsingSkillValue = queueUsingSkill.Value;
-                Vector3 aimPosition = queueUsingSkillValue.aimPosition.HasValue ? queueUsingSkillValue.aimPosition.Value : CharacterTransform.position;
-                RequestUseSkill(queueUsingSkillValue.dataId);
+                // If target entity is not null it's means player still hold on mouse button
+                // because target entity will be cleared when mouse up event fire
                 queueUsingSkill = null;
+                PlayerCharacterEntity.SetTargetEntity(null);
+                PlayerCharacterEntity.StopMove();
             }
-        }
-
-        public void RequestEquipItem(short itemIndex)
-        {
-            PlayerCharacterEntity.RequestEquipItem(itemIndex);
-        }
-
-        public void RequestUseItem(short itemIndex)
-        {
-            PlayerCharacterEntity.RequestUseItem(itemIndex);
         }
     }
 }
