@@ -17,7 +17,7 @@ namespace MultiplayerARPG
         protected override void UpdatePointClickInput()
         {
             // If it's building something, not allow point click movement
-            if (currentBuildingEntity != null)
+            if (CurrentBuildingEntity != null)
                 return;
 
             if (controllerMode != PlayerCharacterControllerMode.PointClick &&
@@ -42,8 +42,8 @@ namespace MultiplayerARPG
             if (getMouseDown)
             {
                 targetEntity = null;
-                tempCount = FindClickObjects(out tempVector3);
-                for (tempCounter = 0; tempCounter < tempCount; ++tempCounter)
+                int tempCount = FindClickObjects(out tempVector3);
+                for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
                 {
                     tempTransform = GetRaycastTransform(tempCounter);
                     targetPlayer = tempTransform.GetComponent<BasePlayerCharacterEntity>();
@@ -104,7 +104,7 @@ namespace MultiplayerARPG
                 else
                 {
                     // When moving, find target position which mouse click on
-                    tempCount = FindClickObjects(out tempVector3);
+                    int tempCount = FindClickObjects(out tempVector3);
                     if (tempCount > 0)
                     {
                         targetPosition = GetRaycastPoint(0);
