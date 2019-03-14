@@ -10,7 +10,7 @@ namespace MultiplayerARPG
         protected override void Update()
         {
             pointClickSetTargetImmediately = true;
-            selectedTarget = PlayerCharacterEntity.GetTargetEntity();
+            SelectedEntity = PlayerCharacterEntity.GetTargetEntity();
             base.Update();
         }
 
@@ -131,7 +131,7 @@ namespace MultiplayerARPG
             targetPosition = entity.CacheTransform.position;
             targetEntity = entity;
             PlayerCharacterEntity.SetTargetEntity(entity);
-            selectedTarget = entity;
+            SelectedEntity = entity;
         }
 
         public override void RequestAttack()
