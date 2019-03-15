@@ -145,27 +145,15 @@ MonoBehaviour:
   connectKey: SampleConnectKey
   networkAddress: localhost
   networkPort: 7770
+  useWebSocket: 0
   maxConnections: 4
+  transportFactory: {fileID: 0}
   updateServerTimeDuration: 5
   doNotEnterGameOnConnect: 0
   doNotDestroyOnSceneChanges: 0
   autoSaveDuration: 2
   startType: 0
-  selectedCharacter:
-    statPoint: 0
-    skillPoint: 0
-    gold: 0
-    partyId: 0
-    guildId: 0
-    guildRole: 0
-    sharedGuildExp: 0
-    currentMapName: 
-    currentPosition: {x: 0, y: 0, z: 0}
-    respawnMapName: 
-    respawnPosition: {x: 0, y: 0, z: 0}
-    lastUpdate: 0
-    hotkeys: []
-    quests: []
+  enableGmCommands: 0
   writeAddonLog: 0
 --- !u!114 &8174915
 MonoBehaviour:
@@ -201,7 +189,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: LiteNetLibManager.LiteNetLibLoadSceneEvent, Assembly-CSharp, Version=0.0.0.0,
+    m_TypeName: LiteNetLibManager.LiteNetLibLoadSceneEvent, LiteNetLibManager, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   onLoadSceneProgress:
     m_PersistentCalls:
@@ -217,7 +205,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: LiteNetLibManager.LiteNetLibLoadSceneEvent, Assembly-CSharp, Version=0.0.0.0,
+    m_TypeName: LiteNetLibManager.LiteNetLibLoadSceneEvent, LiteNetLibManager, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   onLoadSceneFinish:
     m_PersistentCalls:
@@ -233,7 +221,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: LiteNetLibManager.LiteNetLibLoadSceneEvent, Assembly-CSharp, Version=0.0.0.0,
+    m_TypeName: LiteNetLibManager.LiteNetLibLoadSceneEvent, LiteNetLibManager, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!4 &8174917
 Transform:
@@ -595,6 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca66ed5b09dc41447ad7cf901faa5e46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dimensionType: 0
   gameplayRule: {fileID: 11400000, guid: 3bfe680a81b27ce4ba9642ddff7baa17, type: 2}
   networkSetting: {fileID: 11400000, guid: c0825e8ee894749459ab4c8dda26dfe6, type: 2}
   itemDropEntityPrefab: {fileID: 114247390284341630, guid: 611b907cf80c87a4eb9e0d5d4a8688f5,
@@ -613,8 +602,10 @@ MonoBehaviour:
   - {fileID: 1555851488130254, guid: 90f99869b96e2df4bae83e1f870b68ec, type: 2}
   owningCharacterMiniMapObjects:
   - {fileID: 1620662158371272, guid: f94b43a3f251a6a41849b19fe0aa4fa5, type: 2}
+  nonOwningCharacterMiniMapObjects: []
   monsterCharacterMiniMapObjects:
   - {fileID: 1237499379163380, guid: 2d0368f81f8351144a6b29dc200981b4, type: 2}
+  npcMiniMapObjects: []
   owningCharacterUI: {fileID: 114899762762614018, guid: 8447ca51d1886764e99f26df8033c4c5,
     type: 2}
   nonOwningCharacterUI: {fileID: 114899762762614018, guid: cf8cfe06d3da49e4ab083bd040961dd5,
@@ -663,6 +654,14 @@ MonoBehaviour:
   dropDistance: 1
   conversationDistance: 3
   buildDistance: 10
+  localChatDistance: 10
+  inventorySystem: 0
+  playerStorage:
+    weightLimit: 0
+    slotLimit: 0
+  guildStorage:
+    weightLimit: 0
+    slotLimit: 0
   minSummonDistance: 2
   maxSummonDistance: 3
   enemySpottedNotifyDistance: 5
@@ -670,6 +669,7 @@ MonoBehaviour:
   maxFollowSummonerDistance: 10
   petDeadLockDuration: 60
   petUnSummonLockDuration: 30
+  joinInstanceMapDistance: 20
   levelUpEffect: {fileID: 114843870614705530, guid: 6f6e255b4877f874c985ed9fb46293a1,
     type: 2}
   startGold: 2000
@@ -760,6 +760,8 @@ MonoBehaviour:
     keyCode: 118
   - keyName: Jump
     keyCode: 32
+  - keyName: FindEnemy
+    keyCode: 9
 --- !u!114 &1379718505
 MonoBehaviour:
   m_ObjectHideFlags: 0
