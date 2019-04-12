@@ -134,15 +134,15 @@ namespace MultiplayerARPG
             SelectedEntity = entity;
         }
 
-        public override void RequestAttack()
+        public void RequestAttack()
         {
-            base.RequestAttack();
+            PlayerCharacterEntity.RequestAttack();
             ClearTargetEntityAfterAttack();
         }
 
-        public override void RequestUseSkill(int dataId)
+        public void RequestUseSkill(int dataId)
         {
-            base.RequestUseSkill(dataId);
+            PlayerCharacterEntity.RequestUseSkill(dataId);
             ClearTargetEntityAfterAttack();
         }
 
