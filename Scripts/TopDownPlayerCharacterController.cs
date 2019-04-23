@@ -134,18 +134,6 @@ namespace MultiplayerARPG
             SelectedEntity = entity;
         }
 
-        public void RequestAttack()
-        {
-            PlayerCharacterEntity.RequestAttack();
-            ClearTargetEntityAfterAttack();
-        }
-
-        public void RequestUseSkill(int dataId)
-        {
-            PlayerCharacterEntity.RequestUseSkill(dataId);
-            ClearTargetEntityAfterAttack();
-        }
-
         private void ClearTargetEntityAfterAttack()
         {
             if (targetEntity == null)
