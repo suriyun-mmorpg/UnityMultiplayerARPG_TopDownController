@@ -583,6 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca66ed5b09dc41447ad7cf901faa5e46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  umaAvatarDatabase: {fileID: 0}
   dimensionType: 0
   gameplayRule: {fileID: 11400000, guid: 3bfe680a81b27ce4ba9642ddff7baa17, type: 2}
   networkSetting: {fileID: 11400000, guid: c0825e8ee894749459ab4c8dda26dfe6, type: 2}
@@ -647,6 +648,7 @@ MonoBehaviour:
     layerIndex: 14
   nonTargetingLayers:
   - layerIndex: 11
+  groundOrWallLayers: []
   itemAppearDuration: 60
   itemLootLockDuration: 5
   coCharacterActionDuration: 5
@@ -716,6 +718,30 @@ MonoBehaviour:
     amount: 1
   - item: {fileID: 11400000, guid: 63ab6ffb9b0b1eb40958204ac1767f1b, type: 2}
     amount: 1
+  - item: {fileID: 11400000, guid: 6038b1c354df3654b9541fa590ffa8e1, type: 2}
+    amount: 25
+  - item: {fileID: 11400000, guid: 468bd5abf44aa1542bfd9e773a15447f, type: 2}
+    amount: 25
+  - item: {fileID: 11400000, guid: c644cbfe48942184985385fdf09fa774, type: 2}
+    amount: 25
+  - item: {fileID: 11400000, guid: a46be55d0bb06d841869dcc11c617100, type: 2}
+    amount: 25
+  - item: {fileID: 11400000, guid: 5c41c66bae9e3894998afbb3f19cdfd5, type: 2}
+    amount: 25
+  - item: {fileID: 11400000, guid: 75570e9520eae274da93b3f64e5930eb, type: 2}
+    amount: 25
+  - item: {fileID: 11400000, guid: 84eba039ed32fda4693c20ebba14c822, type: 2}
+    amount: 999
+  - item: {fileID: 11400000, guid: 6a844357d966b924ea30ae8d473e030a, type: 2}
+    amount: 999
+  - item: {fileID: 11400000, guid: effa88bea19e7fe4babaf64ec0c771a2, type: 2}
+    amount: 999
+  - item: {fileID: 11400000, guid: c4f83999d394a4c4cbd65dc4e44885df, type: 2}
+    amount: 1
+  - item: {fileID: 11400000, guid: df61cc539bfb0d94aa82ffac5bd01724, type: 2}
+    amount: 1
+  - item: {fileID: 11400000, guid: cef25d7570c129340a039818a8fca7c6, type: 2}
+    amount: 1
   homeScene:
     sceneAsset: {fileID: 102900000, guid: ade6fa5747c04c54b99f067a5ed7f2f1, type: 3}
     sceneName: 01Home
@@ -762,6 +788,8 @@ MonoBehaviour:
     keyCode: 32
   - keyName: FindEnemy
     keyCode: 9
+  - keyName: Reload
+    keyCode: 114
 --- !u!114 &1379718505
 MonoBehaviour:
   m_ObjectHideFlags: 0
