@@ -140,7 +140,7 @@ namespace MultiplayerARPG
             {
                 // If target entity is not null it's means player still hold on mouse button
                 // because target entity will be cleared when mouse up event fire
-                queueUsingSkill = null;
+                ClearQueueUsingSkill();
                 PlayerCharacterEntity.SetTargetEntity(null);
                 PlayerCharacterEntity.StopMove();
             }
