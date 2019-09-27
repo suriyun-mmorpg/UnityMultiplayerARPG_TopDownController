@@ -14,7 +14,7 @@ namespace MultiplayerARPG
             base.Update();
         }
 
-        protected override void UpdatePointClickInput()
+        public override void UpdatePointClickInput()
         {
             // If it's building something, not allow point click movement
             if (CurrentBuildingEntity != null)
