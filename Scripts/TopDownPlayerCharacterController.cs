@@ -39,8 +39,13 @@ namespace MultiplayerARPG
                 return;
             }
 
+            // Prepare temp variables
+            Transform tempTransform;
+            Vector3 tempVector3;
+
             if (getMouseDown)
             {
+                // Clear target
                 targetEntity = null;
                 int tempCount = FindClickObjects(out tempVector3);
                 for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
