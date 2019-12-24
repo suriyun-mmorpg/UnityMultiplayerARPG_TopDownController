@@ -129,7 +129,7 @@ namespace MultiplayerARPG
                     // - Clear character target to make character stop doing actions
                     // - Clear selected target to hide selected entity UIs
                     // - Set target position to position where mouse clicked
-                    if (gameInstance.DimensionType == DimensionType.Dimension2D)
+                    if (CurrentGameInstance.DimensionType == DimensionType.Dimension2D)
                     {
                         PlayerCharacterEntity.SetTargetEntity(null);
                         tempVector3.z = 0;
