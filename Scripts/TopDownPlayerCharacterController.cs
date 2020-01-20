@@ -19,7 +19,7 @@ namespace MultiplayerARPG
         public override void UpdatePointClickInput()
         {
             // If it's building something, not allow point click movement
-            if (CurrentBuildingEntity != null)
+            if (ConstructingBuildingEntity != null)
                 return;
 
             isPointerOverUI = CacheUISceneGameplay != null && CacheUISceneGameplay.IsPointerOverUIObject();
