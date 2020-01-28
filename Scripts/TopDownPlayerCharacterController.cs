@@ -48,7 +48,7 @@ namespace MultiplayerARPG
                 SelectedEntity = null;
 
             tempCount = FindClickObjects(out tempVector3);
-            for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
+            for (int tempCounter = tempCount - 1; tempCounter >= 0; --tempCounter)
             {
                 tempTransform = GetRaycastTransform(tempCounter);
                 targetPlayer = tempTransform.GetComponent<BasePlayerCharacterEntity>();
@@ -100,12 +100,12 @@ namespace MultiplayerARPG
                         SetTarget(targetHarvestable, TargetActionType.Undefined);
                     break;
                 }
-                else if (buildingMaterial != null && buildingMaterial.buildingEntity != null && !buildingMaterial.buildingEntity.IsDead())
+                else if (buildingMaterial != null && buildingMaterial.entity != null && !buildingMaterial.entity.IsDead())
                 {
                     if (!getMouse)
-                        SelectedEntity = buildingMaterial.buildingEntity;
+                        SelectedEntity = buildingMaterial.entity;
                     if (getMouseDown)
-                        SetTarget(buildingMaterial.buildingEntity, TargetActionType.Undefined);
+                        SetTarget(buildingMaterial.entity, TargetActionType.Undefined);
                     break;
                 }
             }
