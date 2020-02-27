@@ -113,8 +113,7 @@ namespace MultiplayerARPG
             if (getMouse)
             {
                 // Close NPC dialog, when target changes
-                if (CacheUISceneGameplay != null && CacheUISceneGameplay.uiNpcDialog != null)
-                    CacheUISceneGameplay.uiNpcDialog.Hide();
+                HideNpcDialog();
 
                 if (TargetEntity != null)
                     cantSetDestination = true;
