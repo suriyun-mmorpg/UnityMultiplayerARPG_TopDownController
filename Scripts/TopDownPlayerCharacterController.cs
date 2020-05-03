@@ -13,6 +13,7 @@ namespace MultiplayerARPG
         {
             pointClickSetTargetImmediately = true;
             controllerMode = PlayerCharacterControllerMode.PointClick;
+            isFollowingTarget = true;
             base.Update();
         }
 
@@ -58,7 +59,6 @@ namespace MultiplayerARPG
                 targetHarvestable = tempTransform.GetComponent<HarvestableEntity>();
                 BuildingMaterial buildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
                 targetPosition = GetRaycastPoint(tempCounter);
-                PlayerCharacterEntity.SetTargetEntity(null);
                 lastNpcObjectId = 0;
                 if (targetPlayer != null && !targetPlayer.GetCaches().IsHide)
                 {
@@ -112,11 +112,16 @@ namespace MultiplayerARPG
 
             if (getMouse)
             {
-                // Close NPC dialog, when target changes
-                HideNpcDialog();
-
                 if (TargetEntity != null)
+                {
+                    // Has target so move to target not the destination
                     cantSetDestination = true;
+                }
+                else
+                {
+                    // Close NPC dialog, when target changes
+                    HideNpcDialog();
+                }
 
                 // Move to target
                 if (!cantSetDestination)
@@ -140,6 +145,7 @@ namespace MultiplayerARPG
             }
             else
             {
+                // Mouse released, reset states
                 if (TargetEntity == null)
                     cantSetDestination = false;
             }
