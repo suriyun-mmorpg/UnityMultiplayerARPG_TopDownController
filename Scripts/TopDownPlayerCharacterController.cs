@@ -8,6 +8,9 @@ namespace MultiplayerARPG
     public sealed partial class TopDownPlayerCharacterController : PlayerCharacterController
     {
         private bool cantSetDestination;
+        private bool getRMouseDown;
+        private bool getRMouseUp;
+        private bool getRMouse;
 
         protected override void Update()
         {
@@ -31,13 +34,9 @@ namespace MultiplayerARPG
             getMouseDown = Input.GetMouseButtonDown(0);
             getMouseUp = Input.GetMouseButtonUp(0);
             getMouse = Input.GetMouseButton(0);
-
-            if (getMouseUp)
-            {
-                // Clear target when player release mouse button
-                ClearTarget(true);
-                return;
-            }
+            getRMouseDown = Input.GetMouseButtonDown(1);
+            getRMouseUp = Input.GetMouseButtonUp(1);
+            getRMouse = Input.GetMouseButton(1);
 
             // Prepare temp variables
             Transform tempTransform;
@@ -58,6 +57,7 @@ namespace MultiplayerARPG
                 targetNpc = tempTransform.GetComponent<NpcEntity>();
                 targetItemDrop = tempTransform.GetComponent<ItemDropEntity>();
                 targetHarvestable = tempTransform.GetComponent<HarvestableEntity>();
+                targetVehicle = tempTransform.GetComponent<VehicleEntity>();
                 tempBuildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
                 if (tempBuildingMaterial != null && tempBuildingMaterial.TargetEntity != null)
                     targetBuilding = tempBuildingMaterial.TargetEntity;
@@ -103,12 +103,28 @@ namespace MultiplayerARPG
                         SetTarget(targetHarvestable, TargetActionType.Undefined);
                     break;
                 }
+                else if (targetVehicle != null)
+                {
+                    if (!getMouse)
+                        SelectedEntity = targetVehicle;
+                    if (getMouseDown)
+                        SetTarget(targetVehicle, TargetActionType.Undefined);
+                    break;
+                }
                 else if (targetBuilding != null && !targetBuilding.IsDead())
                 {
                     if (!getMouse)
                         SelectedEntity = targetBuilding;
-                    if (getMouseDown)
+                    if (getMouseDown && targetBuilding.Activatable)
+                    {
+                        IsEditingBuilding = false;
                         SetTarget(targetBuilding, TargetActionType.Undefined);
+                    }
+                    if (getRMouseDown)
+                    {
+                        IsEditingBuilding = true;
+                        SetTarget(targetBuilding, TargetActionType.Undefined);
+                    }
                     break;
                 }
             }
@@ -127,10 +143,10 @@ namespace MultiplayerARPG
                 }
 
                 // Move to target
-                if (!cantSetDestination)
+                if (!cantSetDestination && tempCount > 0)
                 {
                     // When moving, find target position which mouse click on
-                    targetPosition = GetRaycastPoint(0);
+                    targetPosition = GetRaycastPoint(tempCount - 1);
                     // When clicked on map (any non-collider position)
                     // tempVector3 is come from FindClickObjects()
                     // - Clear character target to make character stop doing actions
@@ -151,6 +167,33 @@ namespace MultiplayerARPG
                 // Mouse released, reset states
                 if (TargetEntity == null)
                     cantSetDestination = false;
+            }
+        }
+
+        protected override void OnDoActionOnEntity()
+        {
+            if (!getMouse && !getRMouse)
+            {
+                // Clear target when player release mouse button
+                ClearTarget(true);
+            }
+        }
+
+        protected override void OnAttackOnEntity()
+        {
+            if (!getMouse && !getRMouse)
+            {
+                // Clear target when player release mouse button
+                ClearTarget(true);
+            }
+        }
+
+        protected override void OnUseSkillOnEntity()
+        {
+            if (!getMouse && !getRMouse)
+            {
+                // Clear target when player release mouse button
+                ClearTarget(true);
             }
         }
 
