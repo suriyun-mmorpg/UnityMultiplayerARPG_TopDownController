@@ -58,7 +58,6 @@ namespace MultiplayerARPG
                 targetNpc = tempTransform.GetComponent<NpcEntity>();
                 targetItemDrop = tempTransform.GetComponent<ItemDropEntity>();
                 targetHarvestable = tempTransform.GetComponent<HarvestableEntity>();
-                targetBuilding = null;
                 tempBuildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
                 if (tempBuildingMaterial != null && tempBuildingMaterial.TargetEntity != null)
                     targetBuilding = tempBuildingMaterial.TargetEntity;
@@ -104,7 +103,7 @@ namespace MultiplayerARPG
                         SetTarget(targetHarvestable, TargetActionType.Undefined);
                     break;
                 }
-                else if (targetBuilding != null && targetBuilding.IsDead())
+                else if (targetBuilding != null && !targetBuilding.IsDead())
                 {
                     if (!getMouse)
                         SelectedEntity = targetBuilding;
