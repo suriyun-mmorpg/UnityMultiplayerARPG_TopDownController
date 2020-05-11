@@ -43,6 +43,7 @@ namespace MultiplayerARPG
             Transform tempTransform;
             Vector3 tempVector3;
             int tempCount;
+            BuildingMaterial tempBuildingMaterial;
 
             // Clear target
             if (!getMouse)
@@ -57,7 +58,10 @@ namespace MultiplayerARPG
                 targetNpc = tempTransform.GetComponent<NpcEntity>();
                 targetItemDrop = tempTransform.GetComponent<ItemDropEntity>();
                 targetHarvestable = tempTransform.GetComponent<HarvestableEntity>();
-                BuildingMaterial buildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
+                targetBuilding = null;
+                tempBuildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
+                if (tempBuildingMaterial != null && tempBuildingMaterial.TargetEntity != null)
+                    targetBuilding = tempBuildingMaterial.TargetEntity;
                 targetPosition = GetRaycastPoint(tempCounter);
                 lastNpcObjectId = 0;
                 if (targetPlayer != null && !targetPlayer.GetCaches().IsHide)
@@ -100,12 +104,12 @@ namespace MultiplayerARPG
                         SetTarget(targetHarvestable, TargetActionType.Undefined);
                     break;
                 }
-                else if (buildingMaterial != null && buildingMaterial.entity != null && !buildingMaterial.entity.IsDead())
+                else if (targetBuilding != null && targetBuilding.IsDead())
                 {
                     if (!getMouse)
-                        SelectedEntity = buildingMaterial.entity;
+                        SelectedEntity = targetBuilding;
                     if (getMouseDown)
-                        SetTarget(buildingMaterial.entity, TargetActionType.Undefined);
+                        SetTarget(targetBuilding, TargetActionType.Undefined);
                     break;
                 }
             }
