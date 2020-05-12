@@ -48,6 +48,9 @@ namespace MultiplayerARPG
             if (!getMouse)
                 SelectedEntity = null;
 
+            if (getMouseDown)
+                TargetEntity = null;
+
             tempCount = FindClickObjects(out tempVector3);
             for (int tempCounter = tempCount - 1; tempCounter >= 0; --tempCounter)
             {
