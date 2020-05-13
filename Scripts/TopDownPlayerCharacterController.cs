@@ -87,7 +87,7 @@ namespace MultiplayerARPG
                     if (!getMouse)
                         SelectedEntity = targetNpc;
                     if (getMouseDown)
-                        SetTarget(targetNpc, TargetActionType.Undefined);
+                        SetTarget(targetNpc, TargetActionType.Activate);
                     break;
                 }
                 else if (targetItemDrop != null)
@@ -95,7 +95,7 @@ namespace MultiplayerARPG
                     if (!getMouse)
                         SelectedEntity = targetItemDrop;
                     if (getMouseDown)
-                        SetTarget(targetItemDrop, TargetActionType.Undefined);
+                        SetTarget(targetItemDrop, TargetActionType.Activate);
                     break;
                 }
                 else if (targetHarvestable != null && !targetHarvestable.IsDead())
@@ -103,7 +103,7 @@ namespace MultiplayerARPG
                     if (!getMouse)
                         SelectedEntity = targetHarvestable;
                     if (getMouseDown)
-                        SetTarget(targetHarvestable, TargetActionType.Undefined);
+                        SetTarget(targetHarvestable, TargetActionType.Attack);
                     break;
                 }
                 else if (targetVehicle != null)
@@ -111,7 +111,7 @@ namespace MultiplayerARPG
                     if (!getMouse)
                         SelectedEntity = targetVehicle;
                     if (getMouseDown)
-                        SetTarget(targetVehicle, TargetActionType.Undefined);
+                        SetTarget(targetVehicle, TargetActionType.Activate);
                     break;
                 }
                 else if (targetBuilding != null && !targetBuilding.IsDead())
@@ -119,15 +119,9 @@ namespace MultiplayerARPG
                     if (!getMouse)
                         SelectedEntity = targetBuilding;
                     if (getMouseDown && targetBuilding.Activatable)
-                    {
-                        IsEditingBuilding = false;
-                        SetTarget(targetBuilding, TargetActionType.Undefined);
-                    }
+                        SetTarget(targetBuilding, TargetActionType.Activate);
                     if (getRMouseDown)
-                    {
-                        IsEditingBuilding = true;
-                        SetTarget(targetBuilding, TargetActionType.Undefined);
-                    }
+                        SetTarget(targetBuilding, TargetActionType.ViewOptions);
                     break;
                 }
             }
