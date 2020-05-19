@@ -54,7 +54,7 @@ namespace MultiplayerARPG
             tempCount = FindClickObjects(out tempVector3);
             for (int tempCounter = tempCount - 1; tempCounter >= 0; --tempCounter)
             {
-                tempTransform = GetRaycastTransform(tempCounter);
+                tempTransform = physicFunctions.GetRaycastTransform(tempCounter);
                 targetPlayer = tempTransform.GetComponent<BasePlayerCharacterEntity>();
                 targetMonster = tempTransform.GetComponent<BaseMonsterCharacterEntity>();
                 targetNpc = tempTransform.GetComponent<NpcEntity>();
@@ -64,7 +64,7 @@ namespace MultiplayerARPG
                 tempBuildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
                 if (tempBuildingMaterial != null && tempBuildingMaterial.TargetEntity != null)
                     targetBuilding = tempBuildingMaterial.TargetEntity;
-                targetPosition = GetRaycastPoint(tempCounter);
+                targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
                 lastNpcObjectId = 0;
                 if (targetPlayer != null && !targetPlayer.IsHideOrDead)
                 {
@@ -143,7 +143,7 @@ namespace MultiplayerARPG
                 if (!cantSetDestination && tempCount > 0)
                 {
                     // When moving, find target position which mouse click on
-                    targetPosition = GetRaycastPoint(tempCount - 1);
+                    targetPosition = physicFunctions.GetRaycastPoint(tempCount - 1);
                     // When clicked on map (any non-collider position)
                     // tempVector3 is come from FindClickObjects()
                     // - Clear character target to make character stop doing actions
