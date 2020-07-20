@@ -45,11 +45,11 @@ namespace MultiplayerARPG
             BuildingMaterial tempBuildingMaterial;
 
             // Clear target
-            if (!getMouse)
-                SelectedEntity = null;
-
-            if (getMouseDown)
+            if (!getMouse || getMouseDown)
+            {
                 TargetEntity = null;
+                didActionOnTarget = false;
+            }
 
             tempCount = FindClickObjects(out tempVector3);
             for (int tempCounter = tempCount - 1; tempCounter >= 0; --tempCounter)
@@ -65,7 +65,6 @@ namespace MultiplayerARPG
                 if (tempBuildingMaterial != null && tempBuildingMaterial.TargetEntity != null)
                     targetBuilding = tempBuildingMaterial.TargetEntity;
                 targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
-                lastNpcObjectId = 0;
                 if (targetPlayer != null && !targetPlayer.IsHideOrDead)
                 {
                     if (!getMouse)
