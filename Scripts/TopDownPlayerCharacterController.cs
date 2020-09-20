@@ -65,7 +65,7 @@ namespace MultiplayerARPG
                 if (tempBuildingMaterial != null && tempBuildingMaterial.TargetEntity != null)
                     targetBuilding = tempBuildingMaterial.TargetEntity;
                 targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
-                if (targetPlayer != null && !targetPlayer.IsHideOrDead)
+                if (targetPlayer != null && !targetPlayer.IsHideOrDead())
                 {
                     if (!getMouse)
                         SelectedEntity = targetPlayer;
@@ -73,7 +73,7 @@ namespace MultiplayerARPG
                         SetTarget(targetPlayer, TargetActionType.Attack);
                     break;
                 }
-                else if (targetMonster != null && !targetMonster.IsHideOrDead)
+                else if (targetMonster != null && !targetMonster.IsHideOrDead())
                 {
                     if (!getMouse)
                         SelectedEntity = targetMonster;
