@@ -110,7 +110,12 @@ namespace MultiplayerARPG
                     if (!getMouse)
                         SelectedEntity = targetVehicle;
                     if (getMouseDown)
-                        SetTarget(targetVehicle, TargetActionType.Activate);
+                    {
+                        if (targetVehicle.ShouldBeAttackTarget)
+                            SetTarget(targetVehicle, TargetActionType.Attack);
+                        else
+                            SetTarget(targetVehicle, TargetActionType.Activate);
+                    }
                     break;
                 }
                 else if (targetBuilding != null && !targetBuilding.IsDead())
