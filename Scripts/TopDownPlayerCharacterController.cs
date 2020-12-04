@@ -39,6 +39,7 @@ namespace MultiplayerARPG
             getRMouse = Input.GetMouseButton(1);
 
             // Prepare temp variables
+            bool foundTargetEntity = false;
             Transform tempTransform;
             Vector3 tempVector3;
             int tempCount;
@@ -52,7 +53,7 @@ namespace MultiplayerARPG
             }
 
             tempCount = FindClickObjects(out tempVector3);
-            for (int tempCounter = tempCount - 1; tempCounter >= 0; --tempCounter)
+            for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
             {
                 tempTransform = physicFunctions.GetRaycastTransform(tempCounter);
                 targetPlayer = tempTransform.GetComponent<BasePlayerCharacterEntity>();
@@ -67,6 +68,7 @@ namespace MultiplayerARPG
                 targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
                 if (targetPlayer != null && !targetPlayer.IsHideOrDead())
                 {
+                    foundTargetEntity = true;
                     if (!getMouse)
                         SelectedEntity = targetPlayer;
                     if (getMouseDown)
@@ -75,6 +77,7 @@ namespace MultiplayerARPG
                 }
                 else if (targetMonster != null && !targetMonster.IsHideOrDead())
                 {
+                    foundTargetEntity = true;
                     if (!getMouse)
                         SelectedEntity = targetMonster;
                     if (getMouseDown)
@@ -83,6 +86,7 @@ namespace MultiplayerARPG
                 }
                 else if (targetNpc != null)
                 {
+                    foundTargetEntity = true;
                     if (!getMouse)
                         SelectedEntity = targetNpc;
                     if (getMouseDown)
@@ -91,6 +95,7 @@ namespace MultiplayerARPG
                 }
                 else if (targetItemDrop != null)
                 {
+                    foundTargetEntity = true;
                     if (!getMouse)
                         SelectedEntity = targetItemDrop;
                     if (getMouseDown)
@@ -99,6 +104,7 @@ namespace MultiplayerARPG
                 }
                 else if (targetHarvestable != null && !targetHarvestable.IsDead())
                 {
+                    foundTargetEntity = true;
                     if (!getMouse)
                         SelectedEntity = targetHarvestable;
                     if (getMouseDown)
@@ -107,6 +113,7 @@ namespace MultiplayerARPG
                 }
                 else if (targetVehicle != null)
                 {
+                    foundTargetEntity = true;
                     if (!getMouse)
                         SelectedEntity = targetVehicle;
                     if (getMouseDown)
@@ -120,6 +127,7 @@ namespace MultiplayerARPG
                 }
                 else if (targetBuilding != null && !targetBuilding.IsDead())
                 {
+                    foundTargetEntity = true;
                     if (!getMouse)
                         SelectedEntity = targetBuilding;
                     if (getMouseDown && targetBuilding.Activatable)
@@ -129,6 +137,9 @@ namespace MultiplayerARPG
                     break;
                 }
             }
+
+            if (!foundTargetEntity)
+                SelectedEntity = null;
 
             if (getMouse)
             {
@@ -147,7 +158,7 @@ namespace MultiplayerARPG
                 if (!cantSetDestination && tempCount > 0)
                 {
                     // When moving, find target position which mouse click on
-                    targetPosition = physicFunctions.GetRaycastPoint(tempCount - 1);
+                    targetPosition = physicFunctions.GetRaycastPoint(0);
                     // When clicked on map (any non-collider position)
                     // tempVector3 is come from FindClickObjects()
                     // - Clear character target to make character stop doing actions
