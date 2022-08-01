@@ -155,12 +155,12 @@ namespace MultiplayerARPG
                     // - Set target position to position where mouse clicked
                     if (CurrentGameInstance.DimensionType == DimensionType.Dimension2D)
                     {
-                        PlayerCharacterEntity.SetTargetEntity(null);
+                        PlayingCharacterEntity.SetTargetEntity(null);
                         tempVector3.z = 0;
                         targetPosition = tempVector3;
                     }
                     destination = targetPosition;
-                    PlayerCharacterEntity.PointClickMovement(targetPosition.Value);
+                    PlayingCharacterEntity.PointClickMovement(targetPosition.Value);
                 }
             }
             else
@@ -203,7 +203,7 @@ namespace MultiplayerARPG
             this.targetActionType = targetActionType;
             destination = null;
             TargetEntity = entity;
-            PlayerCharacterEntity.SetTargetEntity(entity as BaseGameEntity);
+            PlayingCharacterEntity.SetTargetEntity(entity as BaseGameEntity);
         }
     }
 }
