@@ -45,7 +45,7 @@ namespace MultiplayerARPG
             // Clear target
             if (!getMouse || getMouseDown)
             {
-                TargetEntity = null;
+                TargetGameEntity = null;
                 didActionOnTarget = false;
             }
 
@@ -67,7 +67,7 @@ namespace MultiplayerARPG
                 {
                     foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedEntity = targetPlayer;
+                        SelectedGameEntity = targetPlayer;
                     if (getMouseDown)
                         SetTarget(targetPlayer, TargetActionType.Attack);
                     break;
@@ -76,7 +76,7 @@ namespace MultiplayerARPG
                 {
                     foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedEntity = targetMonster;
+                        SelectedGameEntity = targetMonster;
                     if (getMouseDown)
                         SetTarget(targetMonster, TargetActionType.Attack);
                     break;
@@ -85,7 +85,7 @@ namespace MultiplayerARPG
                 {
                     foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedEntity = targetNpc;
+                        SelectedGameEntity = targetNpc;
                     if (getMouseDown)
                         SetTarget(targetNpc, TargetActionType.Activate);
                     break;
@@ -94,7 +94,7 @@ namespace MultiplayerARPG
                 {
                     foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedEntity = targetItemDrop;
+                        SelectedGameEntity = targetItemDrop;
                     if (getMouseDown)
                         SetTarget(targetItemDrop, TargetActionType.Activate);
                     break;
@@ -103,7 +103,7 @@ namespace MultiplayerARPG
                 {
                     foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedEntity = targetHarvestable;
+                        SelectedGameEntity = targetHarvestable;
                     if (getMouseDown)
                         SetTarget(targetHarvestable, TargetActionType.Attack);
                     break;
@@ -112,7 +112,7 @@ namespace MultiplayerARPG
                 {
                     foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedEntity = targetVehicle;
+                        SelectedGameEntity = targetVehicle;
                     if (getMouseDown)
                     {
                         if (targetVehicle.ShouldBeAttackTarget())
@@ -126,7 +126,7 @@ namespace MultiplayerARPG
                 {
                     foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedEntity = targetBuilding;
+                        SelectedGameEntity = targetBuilding;
                     if (getMouseDown && targetBuilding.Activatable)
                         SetTarget(targetBuilding, TargetActionType.Activate);
                     if (getRMouseDown)
@@ -136,11 +136,11 @@ namespace MultiplayerARPG
             }
 
             if (!foundTargetEntity)
-                SelectedEntity = null;
+                SelectedGameEntity = null;
 
             if (getMouse)
             {
-                if (TargetEntity != null)
+                if (TargetGameEntity != null)
                 {
                     // Has target so move to target not the destination
                     cantSetDestination = true;
@@ -174,7 +174,7 @@ namespace MultiplayerARPG
             else
             {
                 // Mouse released, reset states
-                if (TargetEntity == null)
+                if (TargetGameEntity == null)
                     cantSetDestination = false;
             }
         }
@@ -210,7 +210,7 @@ namespace MultiplayerARPG
         {
             this.targetActionType = targetActionType;
             destination = null;
-            TargetEntity = entity;
+            TargetGameEntity = entity;
             PlayerCharacterEntity.SetTargetEntity(entity);
         }
     }
