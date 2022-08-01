@@ -40,12 +40,11 @@ namespace MultiplayerARPG
             Transform tempTransform;
             Vector3 tempVector3;
             int tempCount;
-            BuildingMaterial tempBuildingMaterial;
 
             // Clear target
             if (!getMouse || getMouseDown)
             {
-                TargetGameEntity = null;
+                TargetEntity = null;
                 didActionOnTarget = false;
             }
 
@@ -53,16 +52,8 @@ namespace MultiplayerARPG
             for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
             {
                 tempTransform = physicFunctions.GetRaycastTransform(tempCounter);
-                targetPlayer = tempTransform.GetComponent<BasePlayerCharacterEntity>();
-                targetMonster = tempTransform.GetComponent<BaseMonsterCharacterEntity>();
-                targetNpc = tempTransform.GetComponent<NpcEntity>();
-                targetItemDrop = tempTransform.GetComponent<ItemDropEntity>();
-                targetHarvestable = tempTransform.GetComponent<HarvestableEntity>();
-                targetVehicle = tempTransform.GetComponent<VehicleEntity>();
-                tempBuildingMaterial = tempTransform.GetComponent<BuildingMaterial>();
-                if (tempBuildingMaterial != null)
-                    targetBuilding = tempBuildingMaterial.BuildingEntity;
                 targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
+                /*
                 if (targetPlayer != null && !targetPlayer.IsHideOrDead())
                 {
                     foundTargetEntity = true;
@@ -133,10 +124,11 @@ namespace MultiplayerARPG
                         SetTarget(targetBuilding, TargetActionType.ViewOptions);
                     break;
                 }
+                */
             }
 
             if (!foundTargetEntity)
-                SelectedGameEntity = null;
+                SelectedEntity = null;
 
             if (getMouse)
             {
@@ -206,12 +198,12 @@ namespace MultiplayerARPG
             }
         }
 
-        protected override void SetTarget(BaseGameEntity entity, TargetActionType targetActionType, bool checkControllerMode = true)
+        protected override void SetTarget(ITargetableEntity entity, TargetActionType targetActionType, bool checkControllerMode = true)
         {
             this.targetActionType = targetActionType;
             destination = null;
-            TargetGameEntity = entity;
-            PlayerCharacterEntity.SetTargetEntity(entity);
+            TargetEntity = entity;
+            PlayerCharacterEntity.SetTargetEntity(entity as BaseGameEntity);
         }
     }
 }
