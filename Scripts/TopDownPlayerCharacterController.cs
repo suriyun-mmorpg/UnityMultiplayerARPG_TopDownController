@@ -51,8 +51,8 @@ namespace MultiplayerARPG
                 tempTransform = physicFunctions.GetRaycastTransform(tempCounter);
                 targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
                 ITargetableEntity targetable = tempTransform.GetComponent<ITargetableEntity>();
-                IClickActivatableEntity clickActivatable = targetable as IClickActivatableEntity;
-                IHoldClickActivatableEntity holdClickActivatable = targetable as IHoldClickActivatableEntity;
+                IActivatableEntity clickActivatable = targetable as IActivatableEntity;
+                IHoldActivatableEntity rightClickActivatable = targetable as IHoldActivatableEntity;
                 IDamageableEntity damageable = targetable as IDamageableEntity;
                 if (targetable != null)
                 {
@@ -70,7 +70,7 @@ namespace MultiplayerARPG
                     }
                     if (getMouseDown)
                     {
-                        if (clickActivatable != null && clickActivatable.CanActivateByClick())
+                        if (clickActivatable != null && clickActivatable.CanActivate())
                         {
                             // Clicked on entity
                             foundTargetEntity = true;
@@ -88,11 +88,11 @@ namespace MultiplayerARPG
                     }
                     if (getRMouseDown)
                     {
-                        if (holdClickActivatable != null && holdClickActivatable.CanActivateByHoldClick())
+                        if (rightClickActivatable != null && rightClickActivatable.CanHoldActivate())
                         {
                             // Right-clicked on entity
                             foundTargetEntity = true;
-                            SetTarget(holdClickActivatable, TargetActionType.HoldClickActivate);
+                            SetTarget(rightClickActivatable, TargetActionType.HoldClickActivate);
                         }
                     }
                 }
