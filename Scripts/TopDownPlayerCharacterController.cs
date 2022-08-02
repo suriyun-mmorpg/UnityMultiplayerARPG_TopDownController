@@ -42,93 +42,75 @@ namespace MultiplayerARPG
             int tempCount;
 
             // Clear target
-            if (!getMouse || getMouseDown)
-            {
-                TargetEntity = null;
+            if (getMouseDown)
                 didActionOnTarget = false;
-            }
 
             tempCount = FindClickObjects(out tempVector3);
             for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
             {
                 tempTransform = physicFunctions.GetRaycastTransform(tempCounter);
                 targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
-                /*
-                if (targetPlayer != null && !targetPlayer.IsHideOrDead())
+                ITargetableEntity targetable = tempTransform.GetComponent<ITargetableEntity>();
+                IClickActivatableEntity clickActivatable = targetable as IClickActivatableEntity;
+                IHoldClickActivatableEntity holdClickActivatable = targetable as IHoldClickActivatableEntity;
+                IDamageableEntity damageable = targetable as IDamageableEntity;
+                if (targetable != null)
                 {
-                    foundTargetEntity = true;
                     if (!getMouse)
-                        SelectedGameEntity = targetPlayer;
-                    if (getMouseDown)
-                        SetTarget(targetPlayer, TargetActionType.Attack);
-                    break;
-                }
-                else if (targetMonster != null && !targetMonster.IsHideOrDead())
-                {
-                    foundTargetEntity = true;
-                    if (!getMouse)
-                        SelectedGameEntity = targetMonster;
-                    if (getMouseDown)
-                        SetTarget(targetMonster, TargetActionType.Attack);
-                    break;
-                }
-                else if (targetNpc != null)
-                {
-                    foundTargetEntity = true;
-                    if (!getMouse)
-                        SelectedGameEntity = targetNpc;
-                    if (getMouseDown)
-                        SetTarget(targetNpc, TargetActionType.Activate);
-                    break;
-                }
-                else if (targetItemDrop != null)
-                {
-                    foundTargetEntity = true;
-                    if (!getMouse)
-                        SelectedGameEntity = targetItemDrop;
-                    if (getMouseDown)
-                        SetTarget(targetItemDrop, TargetActionType.Activate);
-                    break;
-                }
-                else if (targetHarvestable != null && !targetHarvestable.IsDead())
-                {
-                    foundTargetEntity = true;
-                    if (!getMouse)
-                        SelectedGameEntity = targetHarvestable;
-                    if (getMouseDown)
-                        SetTarget(targetHarvestable, TargetActionType.Attack);
-                    break;
-                }
-                else if (targetVehicle != null)
-                {
-                    foundTargetEntity = true;
-                    if (!getMouse)
-                        SelectedGameEntity = targetVehicle;
+                    {
+                        if (damageable == null || !damageable.IsHideOrDead())
+                        {
+                            // Mouse cursor hover on entity
+                            foundTargetEntity = true;
+                            if (TargetEntity != null)
+                                SelectedEntity = TargetEntity;
+                            else
+                                SelectedEntity = targetable;
+                        }
+                    }
                     if (getMouseDown)
                     {
-                        if (targetVehicle.ShouldBeAttackTarget())
-                            SetTarget(targetVehicle, TargetActionType.Attack);
-                        else
-                            SetTarget(targetVehicle, TargetActionType.Activate);
+                        if (clickActivatable != null && clickActivatable.CanActivateByClick())
+                        {
+                            // Clicked on entity
+                            foundTargetEntity = true;
+                            if (clickActivatable.ShouldBeAttackTarget())
+                                SetTarget(clickActivatable, TargetActionType.Attack);
+                            else
+                                SetTarget(clickActivatable, TargetActionType.ClickActivate);
+                        }
+                        else if (damageable != null && !damageable.IsHideOrDead() && damageable.CanReceiveDamageFrom(PlayingCharacterEntity.GetInfo()))
+                        {
+                            // Clicked on entity
+                            foundTargetEntity = true;
+                            SetTarget(damageable, TargetActionType.Attack);
+                        }
                     }
-                    break;
-                }
-                else if (targetBuilding != null && !targetBuilding.IsDead())
-                {
-                    foundTargetEntity = true;
-                    if (!getMouse)
-                        SelectedGameEntity = targetBuilding;
-                    if (getMouseDown && targetBuilding.Activatable)
-                        SetTarget(targetBuilding, TargetActionType.Activate);
                     if (getRMouseDown)
-                        SetTarget(targetBuilding, TargetActionType.ViewOptions);
-                    break;
+                    {
+                        if (holdClickActivatable != null && holdClickActivatable.CanActivateByHoldClick())
+                        {
+                            // Right-clicked on entity
+                            foundTargetEntity = true;
+                            SetTarget(holdClickActivatable, TargetActionType.HoldClickActivate);
+                        }
+                    }
                 }
-                */
+                if (foundTargetEntity)
+                    break;
             }
 
-            if (!foundTargetEntity)
+            if (getMouseUp && TargetEntity == null)
+            {
+                // Mouse release while cursor hover on ground
                 SelectedEntity = null;
+            }
+
+            if (!getMouse && !foundTargetEntity)
+            {
+                // Mouse cursor not hover on entity
+                SelectedEntity = null;
+            }
 
             if (getMouse)
             {
@@ -203,7 +185,8 @@ namespace MultiplayerARPG
             this.targetActionType = targetActionType;
             destination = null;
             TargetEntity = entity;
-            PlayingCharacterEntity.SetTargetEntity(entity as BaseGameEntity);
+            if (entity is IGameEntity)
+                PlayingCharacterEntity.SetTargetEntity((entity as IGameEntity).Entity);
         }
     }
 }
