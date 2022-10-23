@@ -54,15 +54,15 @@ namespace MultiplayerARPG
                 IActivatableEntity clickActivatable = targetable as IActivatableEntity;
                 IHoldActivatableEntity rightClickActivatable = targetable as IHoldActivatableEntity;
                 IDamageableEntity damageable = targetable as IDamageableEntity;
-                if (targetable != null)
+                if (!targetable.IsNull())
                 {
                     if (!getMouse)
                     {
-                        if (damageable == null || !damageable.IsHideOrDead())
+                        if (damageable.IsNull() || !damageable.IsHideOrDead())
                         {
                             // Mouse cursor hover on entity
                             foundTargetEntity = true;
-                            if (TargetEntity != null)
+                            if (!TargetEntity.IsNull())
                                 SelectedEntity = TargetEntity;
                             else
                                 SelectedEntity = targetable;
@@ -70,7 +70,7 @@ namespace MultiplayerARPG
                     }
                     if (getMouseDown)
                     {
-                        if (clickActivatable != null && clickActivatable.CanActivate())
+                        if (!clickActivatable.IsNull() && clickActivatable.CanActivate())
                         {
                             // Clicked on entity
                             foundTargetEntity = true;
@@ -79,7 +79,7 @@ namespace MultiplayerARPG
                             else
                                 SetTarget(clickActivatable, TargetActionType.ClickActivate);
                         }
-                        else if (damageable != null && !damageable.IsHideOrDead() && damageable.CanReceiveDamageFrom(PlayingCharacterEntity.GetInfo()))
+                        else if (!damageable.IsNull() && !damageable.IsHideOrDead() && damageable.CanReceiveDamageFrom(PlayingCharacterEntity.GetInfo()))
                         {
                             // Clicked on entity
                             foundTargetEntity = true;
@@ -88,7 +88,7 @@ namespace MultiplayerARPG
                     }
                     if (getRMouseDown)
                     {
-                        if (rightClickActivatable != null && rightClickActivatable.CanHoldActivate())
+                        if (!rightClickActivatable.IsNull() && rightClickActivatable.CanHoldActivate())
                         {
                             // Right-clicked on entity
                             foundTargetEntity = true;
