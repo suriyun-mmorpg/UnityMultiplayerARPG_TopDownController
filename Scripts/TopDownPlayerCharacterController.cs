@@ -4,10 +4,11 @@ namespace MultiplayerARPG
 {
     public sealed partial class TopDownPlayerCharacterController : PlayerCharacterController
     {
-        private bool cantSetDestination;
+        private bool cannotSetDestination;
         private bool getRMouseDown;
         private bool getRMouseUp;
         private bool getRMouse;
+        private bool lastFrameIsAiming;
 
         protected override void Update()
         {
@@ -112,12 +113,13 @@ namespace MultiplayerARPG
                 SelectedEntity = null;
             }
 
+
             if (getMouse)
             {
                 if (TargetGameEntity != null)
                 {
                     // Has target so move to target not the destination
-                    cantSetDestination = true;
+                    cannotSetDestination = true;
                 }
                 else
                 {
@@ -125,8 +127,11 @@ namespace MultiplayerARPG
                     HideNpcDialog();
                 }
 
+                if (lastFrameIsAiming)
+                    cannotSetDestination = true;
+
                 // Move to target
-                if (!cantSetDestination && tempCount > 0)
+                if (!cannotSetDestination && tempCount > 0)
                 {
                     // When moving, find target position which mouse click on
                     targetPosition = physicFunctions.GetRaycastPoint(0);
@@ -149,8 +154,10 @@ namespace MultiplayerARPG
             {
                 // Mouse released, reset states
                 if (TargetGameEntity == null)
-                    cantSetDestination = false;
+                    cannotSetDestination = false;
             }
+
+            lastFrameIsAiming = AreaSkillControls.IsAiming;
         }
 
         protected override void OnDoActionOnEntity()
