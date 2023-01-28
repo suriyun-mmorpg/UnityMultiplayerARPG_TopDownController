@@ -24,7 +24,7 @@ namespace MultiplayerARPG
             if (ConstructingBuildingEntity != null)
                 return;
 
-            isPointerOverUI = CacheUISceneGameplay != null && CacheUISceneGameplay.IsPointerOverUIObject();
+            isPointerOverUI = UISceneGameplay != null && UISceneGameplay.IsPointerOverUIObject();
             if (isPointerOverUI)
                 return;
 
