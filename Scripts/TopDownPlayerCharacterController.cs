@@ -157,7 +157,7 @@ namespace MultiplayerARPG
                     cannotSetDestination = false;
             }
 
-            lastFrameIsAiming = AreaSkillControls.IsAiming;
+            lastFrameIsAiming = AreaSkillAimController.IsAiming;
         }
 
         protected override void OnDoActionOnEntity()
