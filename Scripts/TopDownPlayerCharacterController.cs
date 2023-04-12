@@ -14,7 +14,7 @@ namespace MultiplayerARPG
         {
             pointClickSetTargetImmediately = true;
             controllerMode = PlayerCharacterControllerMode.PointClick;
-            isFollowingTarget = true;
+            _isFollowingTarget = true;
             base.Update();
         }
 
@@ -49,8 +49,8 @@ namespace MultiplayerARPG
             tempCount = FindClickObjects(out tempVector3);
             for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
             {
-                tempTransform = physicFunctions.GetRaycastTransform(tempCounter);
-                targetPosition = physicFunctions.GetRaycastPoint(tempCounter);
+                tempTransform = _physicFunctions.GetRaycastTransform(tempCounter);
+                targetPosition = _physicFunctions.GetRaycastPoint(tempCounter);
                 ITargetableEntity targetable = tempTransform.GetComponent<ITargetableEntity>();
                 IActivatableEntity clickActivatable = targetable as IActivatableEntity;
                 IHoldActivatableEntity rightClickActivatable = targetable as IHoldActivatableEntity;
@@ -134,7 +134,7 @@ namespace MultiplayerARPG
                 if (!cannotSetDestination && tempCount > 0)
                 {
                     // When moving, find target position which mouse click on
-                    targetPosition = physicFunctions.GetRaycastPoint(0);
+                    targetPosition = _physicFunctions.GetRaycastPoint(0);
                     // When clicked on map (any non-collider position)
                     // tempVector3 is come from FindClickObjects()
                     // - Clear character target to make character stop doing actions
@@ -146,7 +146,7 @@ namespace MultiplayerARPG
                         tempVector3.z = 0;
                         targetPosition = tempVector3;
                     }
-                    destination = targetPosition;
+                    _destination = targetPosition;
                     PlayingCharacterEntity.PointClickMovement(targetPosition.Value);
                 }
             }
@@ -189,8 +189,8 @@ namespace MultiplayerARPG
 
         protected override void SetTarget(ITargetableEntity entity, TargetActionType targetActionType, bool checkControllerMode = true)
         {
-            this.targetActionType = targetActionType;
-            destination = null;
+            this._targetActionType = targetActionType;
+            _destination = null;
             TargetEntity = entity;
             if (entity is IGameEntity)
                 PlayingCharacterEntity.SetTargetEntity((entity as IGameEntity).Entity);
