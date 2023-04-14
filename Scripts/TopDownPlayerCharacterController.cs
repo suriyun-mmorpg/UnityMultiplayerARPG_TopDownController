@@ -24,14 +24,14 @@ namespace MultiplayerARPG
             if (ConstructingBuildingEntity != null)
                 return;
 
-            isPointerOverUI = UISceneGameplay != null && UISceneGameplay.IsPointerOverUIObject();
-            if (isPointerOverUI)
+            _isPointerOverUI = UISceneGameplay != null && UISceneGameplay.IsPointerOverUIObject();
+            if (_isPointerOverUI)
                 return;
 
             // Temp mouse input value
-            getMouseDown = Input.GetMouseButtonDown(0);
-            getMouseUp = Input.GetMouseButtonUp(0);
-            getMouse = Input.GetMouseButton(0);
+            _getMouseDown = Input.GetMouseButtonDown(0);
+            _getMouseUp = Input.GetMouseButtonUp(0);
+            _getMouse = Input.GetMouseButton(0);
             getRMouseDown = Input.GetMouseButtonDown(1);
             getRMouseUp = Input.GetMouseButtonUp(1);
             getRMouse = Input.GetMouseButton(1);
@@ -43,21 +43,21 @@ namespace MultiplayerARPG
             int tempCount;
 
             // Clear target
-            if (getMouseDown)
-                didActionOnTarget = false;
+            if (_getMouseDown)
+                _didActionOnTarget = false;
 
             tempCount = FindClickObjects(out tempVector3);
             for (int tempCounter = 0; tempCounter < tempCount; ++tempCounter)
             {
                 tempTransform = _physicFunctions.GetRaycastTransform(tempCounter);
-                targetPosition = _physicFunctions.GetRaycastPoint(tempCounter);
+                _targetPosition = _physicFunctions.GetRaycastPoint(tempCounter);
                 ITargetableEntity targetable = tempTransform.GetComponent<ITargetableEntity>();
                 IActivatableEntity clickActivatable = targetable as IActivatableEntity;
                 IHoldActivatableEntity rightClickActivatable = targetable as IHoldActivatableEntity;
                 IDamageableEntity damageable = targetable as IDamageableEntity;
                 if (!targetable.IsNull())
                 {
-                    if (!getMouse)
+                    if (!_getMouse)
                     {
                         if (damageable.IsNull() || !damageable.IsHideOrDead())
                         {
@@ -69,7 +69,7 @@ namespace MultiplayerARPG
                                 SelectedEntity = targetable;
                         }
                     }
-                    if (getMouseDown)
+                    if (_getMouseDown)
                     {
                         if (!clickActivatable.IsNull() && clickActivatable.CanActivate())
                         {
@@ -101,20 +101,20 @@ namespace MultiplayerARPG
                     break;
             }
 
-            if (getMouseUp && TargetEntity == null)
+            if (_getMouseUp && TargetEntity == null)
             {
                 // Mouse release while cursor hover on ground
                 SelectedEntity = null;
             }
 
-            if (!getMouse && !foundTargetEntity)
+            if (!_getMouse && !foundTargetEntity)
             {
                 // Mouse cursor not hover on entity
                 SelectedEntity = null;
             }
 
 
-            if (getMouse)
+            if (_getMouse)
             {
                 if (TargetGameEntity != null)
                 {
@@ -134,7 +134,7 @@ namespace MultiplayerARPG
                 if (!cannotSetDestination && tempCount > 0)
                 {
                     // When moving, find target position which mouse click on
-                    targetPosition = _physicFunctions.GetRaycastPoint(0);
+                    _targetPosition = _physicFunctions.GetRaycastPoint(0);
                     // When clicked on map (any non-collider position)
                     // tempVector3 is come from FindClickObjects()
                     // - Clear character target to make character stop doing actions
@@ -144,10 +144,10 @@ namespace MultiplayerARPG
                     {
                         PlayingCharacterEntity.SetTargetEntity(null);
                         tempVector3.z = 0;
-                        targetPosition = tempVector3;
+                        _targetPosition = tempVector3;
                     }
-                    _destination = targetPosition;
-                    PlayingCharacterEntity.PointClickMovement(targetPosition.Value);
+                    _destination = _targetPosition;
+                    PlayingCharacterEntity.PointClickMovement(_targetPosition.Value);
                 }
             }
             else
@@ -162,7 +162,7 @@ namespace MultiplayerARPG
 
         protected override void OnDoActionOnEntity()
         {
-            if (!getMouse && !getRMouse)
+            if (!_getMouse && !getRMouse)
             {
                 // Clear target when player release mouse button
                 ClearTarget(true);
@@ -171,7 +171,7 @@ namespace MultiplayerARPG
 
         protected override void OnAttackOnEntity()
         {
-            if (!getMouse && !getRMouse)
+            if (!_getMouse && !getRMouse)
             {
                 // Clear target when player release mouse button
                 ClearTarget(true);
@@ -180,7 +180,7 @@ namespace MultiplayerARPG
 
         protected override void OnUseSkillOnEntity()
         {
-            if (!getMouse && !getRMouse)
+            if (!_getMouse && !getRMouse)
             {
                 // Clear target when player release mouse button
                 ClearTarget(true);
