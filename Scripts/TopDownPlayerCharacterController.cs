@@ -29,12 +29,12 @@ namespace MultiplayerARPG
                 return;
 
             // Temp mouse input value
-            _getMouseDown = Input.GetMouseButtonDown(0);
-            _getMouseUp = Input.GetMouseButtonUp(0);
-            _getMouse = Input.GetMouseButton(0);
-            getRMouseDown = Input.GetMouseButtonDown(1);
-            getRMouseUp = Input.GetMouseButtonUp(1);
-            getRMouse = Input.GetMouseButton(1);
+            _getMouseDown = InputManager.GetMouseButtonDown(0);
+            _getMouseUp = InputManager.GetMouseButtonUp(0);
+            _getMouse = InputManager.GetMouseButton(0);
+            getRMouseDown = InputManager.GetMouseButtonDown(1);
+            getRMouseUp = InputManager.GetMouseButtonUp(1);
+            getRMouse = InputManager.GetMouseButton(1);
 
             // Prepare temp variables
             bool foundTargetEntity = false;
