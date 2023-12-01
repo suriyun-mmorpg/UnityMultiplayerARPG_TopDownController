@@ -59,7 +59,7 @@ namespace MultiplayerARPG
                 {
                     if (!_getMouse)
                     {
-                        if (damageable.IsNull() || !damageable.IsHideOrDead())
+                        if (damageable.IsNull() || !damageable.IsDeadOrHideFrom(PlayingCharacterEntity))
                         {
                             // Mouse cursor hover on entity
                             foundTargetEntity = true;
@@ -80,7 +80,7 @@ namespace MultiplayerARPG
                             else
                                 SetTarget(clickActivatable, TargetActionType.ClickActivate);
                         }
-                        else if (!damageable.IsNull() && !damageable.IsHideOrDead() && damageable.CanReceiveDamageFrom(PlayingCharacterEntity.GetInfo()))
+                        else if (!damageable.IsNull() && !damageable.IsDeadOrHideFrom(PlayingCharacterEntity) && damageable.CanReceiveDamageFrom(PlayingCharacterEntity.GetInfo()))
                         {
                             // Clicked on entity
                             foundTargetEntity = true;
