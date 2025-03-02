@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Insthync.CameraAndInput;
+using UnityEngine;
 
 namespace MultiplayerARPG
 {
