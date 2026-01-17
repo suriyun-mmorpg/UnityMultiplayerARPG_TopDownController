@@ -11,12 +11,12 @@ namespace MultiplayerARPG
         private bool getRMouse;
         private bool lastFrameIsAiming;
 
-        protected override void Update()
+        public override void ManagedUpdate()
         {
             pointClickSetTargetImmediately = true;
             controllerMode = PlayerCharacterControllerMode.PointClick;
             _isFollowingTarget = true;
-            base.Update();
+            base.ManagedUpdate();
         }
 
         public override void UpdatePointClickInput()
