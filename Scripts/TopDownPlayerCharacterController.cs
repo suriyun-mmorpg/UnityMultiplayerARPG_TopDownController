@@ -5,11 +5,11 @@ namespace MultiplayerARPG
 {
     public sealed partial class TopDownPlayerCharacterController : PlayerCharacterController
     {
-        private bool cannotSetDestination;
-        private bool getRMouseDown;
-        private bool getRMouseUp;
-        private bool getRMouse;
-        private bool lastFrameIsAiming;
+        private bool _cannotSetDestination;
+        private bool _getRMouseDown;
+        private bool _getRMouseUp;
+        private bool _getRMouse;
+        private bool _lastFrameIsAiming;
 
         public override void ManagedUpdate()
         {
@@ -25,17 +25,17 @@ namespace MultiplayerARPG
             if (ConstructingBuildingEntity != null)
                 return;
 
-            _isPointerOverUI = UISceneGameplay != null && UISceneGameplay.IsPointerOverUIObject();
-            if (_isPointerOverUI)
+            bool isPointerOverUI = UISceneGameplay != null && UISceneGameplay.IsPointerOverUIObject();
+            if (isPointerOverUI)
                 return;
 
             // Temp mouse input value
             _getMouseDown = InputManager.GetMouseButtonDown(0);
             _getMouseUp = InputManager.GetMouseButtonUp(0);
             _getMouse = InputManager.GetMouseButton(0);
-            getRMouseDown = InputManager.GetMouseButtonDown(1);
-            getRMouseUp = InputManager.GetMouseButtonUp(1);
-            getRMouse = InputManager.GetMouseButton(1);
+            _getRMouseDown = InputManager.GetMouseButtonDown(1);
+            _getRMouseUp = InputManager.GetMouseButtonUp(1);
+            _getRMouse = InputManager.GetMouseButton(1);
 
             // Prepare temp variables
             bool foundTargetEntity = false;
@@ -88,7 +88,7 @@ namespace MultiplayerARPG
                             SetTarget(damageable, TargetActionType.Attack);
                         }
                     }
-                    if (getRMouseDown)
+                    if (_getRMouseDown)
                     {
                         if (!rightClickActivatable.IsNull() && rightClickActivatable.CanHoldActivate())
                         {
@@ -120,7 +120,7 @@ namespace MultiplayerARPG
                 if (TargetGameEntity != null)
                 {
                     // Has target so move to target not the destination
-                    cannotSetDestination = true;
+                    _cannotSetDestination = true;
                 }
                 else
                 {
@@ -128,11 +128,11 @@ namespace MultiplayerARPG
                     HideNpcDialog();
                 }
 
-                if (lastFrameIsAiming)
-                    cannotSetDestination = true;
+                if (_lastFrameIsAiming)
+                    _cannotSetDestination = true;
 
                 // Move to target
-                if (!cannotSetDestination && tempCount > 0)
+                if (!_cannotSetDestination && tempCount > 0)
                 {
                     // When moving, find target position which mouse click on
                     _targetPosition = _physicFunctions.GetRaycastPoint(0);
@@ -155,15 +155,15 @@ namespace MultiplayerARPG
             {
                 // Mouse released, reset states
                 if (TargetGameEntity == null)
-                    cannotSetDestination = false;
+                    _cannotSetDestination = false;
             }
 
-            lastFrameIsAiming = AreaSkillAimController.IsAiming;
+            _lastFrameIsAiming = AreaSkillAimController.IsAiming;
         }
 
         protected override void OnDoActionOnEntity()
         {
-            if (!_getMouse && !getRMouse)
+            if (!_getMouse && !_getRMouse)
             {
                 // Clear target when player release mouse button
                 ClearTarget(true);
@@ -172,7 +172,7 @@ namespace MultiplayerARPG
 
         protected override void OnAttackOnEntity()
         {
-            if (!_getMouse && !getRMouse)
+            if (!_getMouse && !_getRMouse)
             {
                 // Clear target when player release mouse button
                 ClearTarget(true);
@@ -181,7 +181,7 @@ namespace MultiplayerARPG
 
         protected override void OnUseSkillOnEntity()
         {
-            if (!_getMouse && !getRMouse)
+            if (!_getMouse && !_getRMouse)
             {
                 // Clear target when player release mouse button
                 ClearTarget(true);
