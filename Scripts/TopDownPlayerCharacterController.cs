@@ -10,13 +10,17 @@ namespace MultiplayerARPG
         private bool _getRMouseUp;
         private bool _getRMouse;
         private bool _lastFrameIsAiming;
+        private bool _previouslyDead;
 
         public override void ManagedUpdate()
         {
+            if (!_previouslyDead && PlayingCharacterEntity.IsDead())
+                SetTarget(null, TargetActionType.None);
             pointClickSetTargetImmediately = true;
             controllerMode = PlayerCharacterControllerMode.PointClick;
             _isFollowingTarget = true;
             base.ManagedUpdate();
+            _previouslyDead = PlayingCharacterEntity.IsDead();
         }
 
         public override void UpdatePointClickInput()
@@ -190,7 +194,7 @@ namespace MultiplayerARPG
 
         protected override void SetTarget(ITargetableEntity entity, TargetActionType targetActionType, bool checkControllerMode = true)
         {
-            this._targetActionType = targetActionType;
+            _targetActionType = targetActionType;
             _destination = null;
             TargetEntity = entity;
             if (entity is IGameEntity)
