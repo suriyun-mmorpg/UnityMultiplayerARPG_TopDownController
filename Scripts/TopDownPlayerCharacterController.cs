@@ -12,14 +12,14 @@ namespace MultiplayerARPG
         private bool _lastFrameIsAiming;
         private bool _previouslyDead;
 
-        public override void ManagedUpdate()
+        protected override void UpdateController()
         {
             if (!_previouslyDead && PlayingCharacterEntity.IsDead())
                 SetTarget(null, TargetActionType.None);
             pointClickSetTargetImmediately = true;
             controllerMode = PlayerCharacterControllerMode.PointClick;
             _isFollowingTarget = true;
-            base.ManagedUpdate();
+            base.UpdateController();
             _previouslyDead = PlayingCharacterEntity.IsDead();
         }
 
